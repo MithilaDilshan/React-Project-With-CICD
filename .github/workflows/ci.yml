@@ -1,0 +1,56 @@
+name: Full Stack CI with Cypress
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # Backend
+      - name: Install backend deps
+        run: |
+          cd backend
+          npm install
+
+      - name: Start backend
+        run: |
+          cd backend
+          npm start &
+        env:
+          API_USER: ${{ secrets.API_USER }}
+          API_PASS: ${{ secrets.API_PASS }}
+
+      # Frontend
+      - name: Install frontend deps
+        run: |
+          cd frontend
+          npm install
+
+      - name: Start frontend
+        run: |
+          cd frontend
+          npm start &
+
+      # Wait for apps
+      - name: Wait for servers
+        run: npx wait-on http://localhost:3000
+
+      # Cypress Tests
+      - name: Run Cypress Tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+        env:
+          CYPRESS_BASE_URL: http://localhost:3000
