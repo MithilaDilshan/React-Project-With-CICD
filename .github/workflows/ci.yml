@@ -11,18 +11,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # BACKEND
       - name: Install backend deps
         run: |
-          cd backend
+          cd BACKEND
           npm ci
 
       - name: Start backend
         run: |
-          cd backend
+          cd BACKEND
           npm start &
         env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
+      # frontend
       - name: Install frontend deps
         run: |
           cd frontend
@@ -33,11 +36,13 @@ jobs:
           cd frontend
           npm start &
         env:
-          REACT_APP_API_URL: http://localhost:3000
+          REACT_APP_API_URL: http://localhost:8070
 
+      # cypress
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
           wait-on: http://localhost:3000
-          record: false
+        env:
+          CYPRESS_BASE_URL: http://localhost:3000
