@@ -1,0 +1,43 @@
+name: Full CI Pipeline
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install backend deps
+        run: |
+          cd backend
+          npm ci
+
+      - name: Start backend
+        run: |
+          cd backend
+          npm start &
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+
+      - name: Install frontend deps
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Start frontend
+        run: |
+          cd frontend
+          npm start &
+        env:
+          REACT_APP_API_URL: http://localhost:3000
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          wait-on: http://localhost:3000
+          record: false
