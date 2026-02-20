@@ -19,11 +19,11 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install backend dependencies
-        run: npm install --prefix BACKEND
+        run: npm install  # backend package.json is in root
 
       - name: Start backend
         run: |
-          npm start --prefix BACKEND &
+          npm start &  # backend runs from root
         env:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
@@ -42,7 +42,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install frontend dependencies
         run: npm install --prefix frontend
