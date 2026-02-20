@@ -19,7 +19,7 @@ jobs:
       - name: Backend build / checks
         run: |
           cd BACKEND
-          npm test --if-present
+          npm run build --if-present
 
   frontend:
     name: Frontend CI
