@@ -57,17 +57,14 @@ jobs:
           npm install
 
       # ---------- Start backend ----------
-      - name: Start backend
+      - name: Start backend & wait
         run: |
           cd BACKEND
-          npm install
           npm start &
+          npx wait-on http://localhost:8070 --timeout 120000
         env:
           PORT: 8070
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
-
-      - name: Wait for backend
-        run: npx wait-on http://localhost:8070 --timeout 120000
 
       # ---------- Start frontend ----------
       - name: Start frontend
