@@ -5,7 +5,8 @@ module.exports = defineConfig({
   e2e: {
     baseUrl: process.env.CYPRESS_BASE_URL,
     env: {
-      registrationPath: '/register'
+      registrationPath: '/register',
+      loginPath: '/'
     },
     setupNodeEvents(on, config) {
       return config

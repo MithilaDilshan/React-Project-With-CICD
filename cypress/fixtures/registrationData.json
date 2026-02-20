@@ -14,5 +14,13 @@
     "email": "mismatch@example.com",
     "password": "Test@1234",
     "rePassword": "Test@9999"
+  },
+  "loginUser": {
+    "email": "testuser1@example.com",
+    "password": "Test@1234"
+  },
+  "logininvalid": {
+    "email": "testuser1examplecom",
+    "password": "Test@1234"
   }
 }
