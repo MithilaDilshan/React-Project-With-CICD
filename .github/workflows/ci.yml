@@ -5,51 +5,55 @@ on:
   pull_request:
 
 jobs:
+  # -------------------------------
+  # Backend Job
+  # -------------------------------
   backend:
     name: Backend CI
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: /package-lock.json
+          cache-dependency-path: package-lock.json
 
-      - name: Install backend deps
-        run: |
-          cd BACKEND
-          npm ci
+      - name: Install backend dependencies
+        run: npm ci --prefix BACKEND
 
       - name: Start backend
-        run: |
-          cd BACKEND
-          npm start &
+        run: npm start --prefix BACKEND &
         env:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
-      - name: Health check backend
-        run: |
-          echo "Waiting for backend..."
-          npx wait-on http://localhost:8070 --timeout 60000
+      - name: Wait for backend to be ready
+        run: npx wait-on http://localhost:8070 --timeout 120000
 
+  # -------------------------------
+  # Frontend Job
+  # -------------------------------
   frontend:
     name: Frontend CI
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Install frontend deps
+      - name: Install frontend dependencies
         run: |
           cd frontend
           npm ci
@@ -59,39 +63,40 @@ jobs:
           cd frontend
           npm run build
 
+  # -------------------------------
+  # Cypress E2E Job
+  # -------------------------------
   cypress:
     name: Cypress E2E Tests
     runs-on: ubuntu-latest
-    needs: [backend, frontend]
+    needs: [backend, frontend]  # ensures backend & frontend finish first
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 24
           cache: npm
+          cache-dependency-path: package-lock.json
 
       # ---------- Backend ----------
-      - name: Install backend deps
-        run: |
-          cd BACKEND
-          npm ci
+      - name: Install backend dependencies
+        run: npm ci --prefix BACKEND
 
       - name: Start backend
-        run: |
-          cd BACKEND
-          npm start &
+        run: npm start --prefix BACKEND &
         env:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Wait for backend
-        run: |
-          npx wait-on http://localhost:8070 --timeout 120000
+        run: npx wait-on http://localhost:8070 --timeout 120000
 
       # ---------- Frontend ----------
-      - name: Install frontend deps
+      - name: Install frontend dependencies
         run: |
           cd frontend
           npm ci
@@ -104,11 +109,10 @@ jobs:
           REACT_APP_API_URL: http://localhost:8070
 
       - name: Wait for frontend
-        run: |
-          npx wait-on http://localhost:3000 --timeout 120000
+        run: npx wait-on http://localhost:3000 --timeout 120000
 
-      # ---------- Cypress ----------
-      - name: Run Cypress
+      # ---------- Run Cypress ----------
+      - name: Run Cypress E2E Tests
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
