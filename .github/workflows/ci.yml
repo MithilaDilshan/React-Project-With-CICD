@@ -12,6 +12,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
       - name: Install backend deps
         run: |
           cd BACKEND
@@ -27,8 +33,8 @@ jobs:
 
       - name: Health check backend
         run: |
-          sleep 10
-          curl http://localhost:8070 || exit 1
+          echo "Waiting for backend..."
+          npx wait-on http://localhost:8070 --timeout 60000
 
   frontend:
     name: Frontend CI
@@ -36,6 +42,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install frontend deps
         run: |
@@ -55,12 +67,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      # ---------- Backend ----------
+      - name: Install backend deps
+        run: |
+          cd BACKEND
+          npm ci
+
       - name: Start backend
         run: |
           cd BACKEND
           npm start &
         env:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+      - name: Wait for backend
+        run: |
+          npx wait-on http://localhost:8070 --timeout 120000
+
+      # ---------- Frontend ----------
+      - name: Install frontend deps
+        run: |
+          cd frontend
+          npm ci
 
       - name: Start frontend
         run: |
@@ -69,9 +103,17 @@ jobs:
         env:
           REACT_APP_API_URL: http://localhost:8070
 
+      - name: Wait for frontend
+        run: |
+          npx wait-on http://localhost:3000 --timeout 120000
+
+      # ---------- Cypress ----------
       - name: Run Cypress
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
           wait-on: http://localhost:3000
+          wait-on-timeout: 120000
           record: false
+        env:
+          CI: true
