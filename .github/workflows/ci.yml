@@ -8,56 +8,34 @@ jobs:
   backend:
     name: Backend CI
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install backend dependencies
-        run: npm install  # backend package.json is in root
-
-      - name: Start backend
+      - name: Install backend deps
         run: |
-          npm start &  # backend runs from root
-        env:
-          MONGODB_URL: ${{ secrets.MONGODB_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          cd BACKEND
+          npm install
 
-      - name: Wait for backend
-        run: npx wait-on http://localhost:8070 --timeout 120000
+      - name: Backend build / checks
+        run: |
+          cd BACKEND
+          npm test --if-present
 
   frontend:
     name: Frontend CI
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install frontend dependencies
-        run: npm install --prefix frontend
-
-      - name: Build frontend
-        run: npm run build --prefix frontend
-
-      - name: Start frontend
+      - name: Install frontend deps
         run: |
-          npm start --prefix frontend &
-        env:
-          REACT_APP_API_URL: http://localhost:8070
+          cd frontend
+          npm install
 
-      - name: Wait for frontend
-        run: npx wait-on http://localhost:3000 --timeout 120000
+      - name: Frontend build
+        run: |
+          cd frontend
+          npm run build
 
   cypress:
     name: Cypress E2E Tests
@@ -67,20 +45,47 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
+      # ---------- Install deps ----------
+      - name: Install backend deps
+        run: |
+          cd BACKEND
+          npm install
 
-      - name: Run Cypress Tests
+      - name: Install frontend deps
+        run: |
+          cd frontend
+          npm install
+
+      # ---------- Start backend ----------
+      - name: Start backend
+        run: |
+          cd BACKEND
+          npm start &
+        env:
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+      - name: Wait for backend
+        run: npx wait-on http://localhost:8070 --timeout 120000
+
+      # ---------- Start frontend ----------
+      - name: Start frontend
+        run: |
+          cd frontend
+          npm start &
+        env:
+          REACT_APP_API_URL: http://localhost:8070
+
+      - name: Wait for frontend
+        run: npx wait-on http://localhost:3000 --timeout 180000
+
+      # ---------- Cypress ----------
+      - name: Run Cypress
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
           wait-on: http://localhost:3000
-          wait-on-timeout: 120000
+          wait-on-timeout: 180000
           record: false
         env:
           CI: true
-          REACT_APP_API_URL: http://localhost:8070
-          MONGODB_URL: ${{ secrets.MONGODB_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
