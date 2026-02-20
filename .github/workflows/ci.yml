@@ -60,10 +60,11 @@ jobs:
       - name: Start backend
         run: |
           cd BACKEND
+          npm install
           npm start &
         env:
+          PORT: 8070
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Wait for backend
         run: npx wait-on http://localhost:8070 --timeout 120000
