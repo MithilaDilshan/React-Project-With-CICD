@@ -70,6 +70,14 @@ jobs:
       - name: Wait for backend
         run: npx wait-on http://localhost:8070/health --timeout 180000
 
+
+      - name: Seed test user
+        run: |
+          cd BACKEND
+          npm run seed:test
+        env:
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+
       # ---------- Start frontend ----------
       - name: Start frontend
         run: |

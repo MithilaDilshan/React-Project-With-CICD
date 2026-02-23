@@ -8,12 +8,14 @@
     "start": "nodemon server.js",
     "server": "nodemon server.js",
     "client": "npm start --prefix frontend",
-    "dev": "concurrently \"npm run server\" \"npm run client\" "
+    "dev": "concurrently \"npm run server\" \"npm run client\" ",
+    "seed:test": "node BACKEND/scripts/seed-test-user.js"
   },
   "author": "Geeth Sahan Thamali Shanaka",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "bcryptjs": "^3.0.3",
     "bootstrap": "^5.1.3",
     "cloudinary": "^1.30.0",
     "concurrently": "^7.1.0",

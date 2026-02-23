@@ -19,12 +19,13 @@ describe("Research Management System", () => {
     });
 
     it("should login with valid data", function () {
+      
       cy.intercept("POST", "**/login").as("loginRequest");
 
       loginPage.loginForm(this.data.loginUser);
       loginPage.Login();
 
-      cy.wait("@loginRequest").its("response.statusCode").should("eq", 200);
+      cy.wait("@loginRequest", { timeout: 30000 }).its("response.statusCode").should("eq", 200);
 
       cy.url({ timeout: 30000 }).should("include", "/v3/student-dashboard/Test");
 
