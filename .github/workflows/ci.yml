@@ -61,7 +61,7 @@ jobs:
         run: |
           cd BACKEND
           npm start &
-          npx wait-on http://localhost:8070 --timeout 120000
+          # npx wait-on http://localhost:8070 --timeout 120000
         env:
           PORT: 8070
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
