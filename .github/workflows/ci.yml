@@ -68,7 +68,7 @@ jobs:
           NODE_ENV: test
 
       - name: Show backend logs
-        run: cat BACKEND/backend.log
+        run: cat backend.log
 
       - name: Wait for backend
         run: npx wait-on http://localhost:8070/health --timeout 180000
