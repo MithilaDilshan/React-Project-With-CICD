@@ -30,6 +30,11 @@ app.listen(PORT, () => {
   console.log(`Server is up and running on port number ${PORT}`);
 });
 
+// health route
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.use("/api/auth", require("./BACKEND/routes/auth"));
 app.use("/research-topic", require("./BACKEND/routes/ResearchTopic"));
 app.use("/student-group", require("./BACKEND/routes/StudentGroups"));
