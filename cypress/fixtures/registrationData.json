@@ -1,7 +1,7 @@
 {
   "validUser": {
     "username": "Test User",
-    "email": "testuser2@example.com",
+    "email": "testuser3@example.com",
     "password": "Test@1234"
   },
   "invalidEmail": {
@@ -16,7 +16,7 @@
     "rePassword": "Test@9999"
   },
   "loginUser": {
-    "email": "testuser1@example.com",
+    "email": "testuser3@example.com",
     "password": "Test@1234"
   },
   "logininvalid": {
