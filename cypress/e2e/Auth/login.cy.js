@@ -19,23 +19,27 @@ describe("Research Management System", () => {
     });
 
     it("should login with valid data", function () {
+      cy.intercept("POST", "**/login").as("loginRequest");
+
       loginPage.loginForm(this.data.loginUser);
       loginPage.Login();
-      cy.wait(5000); // Adjust based on your app's response time
 
-      // Adjust based on your app behavior
-      cy.title().should("include", "SLIIT Research Portal");
+      cy.wait("@loginRequest").its("response.statusCode").should("eq", 200);
 
-      // Log out after successful login
-      cy.contains('button', 'Sign Out', { timeout: 15000 })
-        .should('be.visible')
+      cy.url({ timeout: 30000 }).should("include", "/v3/student-dashboard/Test");
+
+      cy.contains('button', 'Sign Out', { timeout: 30000 }).should(
+        "be.visible",
+      );
     });
 
     it("should show error for invalid email", function () {
       loginPage.loginForm(this.data.logininvalid);
       loginPage.Login();
 
-      cy.contains("User does not exists. Please create an account !").should("be.visible");
+      cy.contains("User does not exists. Please create an account !").should(
+        "be.visible",
+      );
     });
   });
 });
