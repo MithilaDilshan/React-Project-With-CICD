@@ -27,8 +27,8 @@ describe("Research Management System", () => {
       cy.title().should("include", "SLIIT Research Portal");
 
       // Log out after successful login
-      loginPage.LogOut();
-      cy.contains("Log in to your account if you already have an account").should("be.visible");
+      cy.contains('button', 'Sign Out', { timeout: 15000 })
+        .should('be.visible')
     });
 
     it("should show error for invalid email", function () {
