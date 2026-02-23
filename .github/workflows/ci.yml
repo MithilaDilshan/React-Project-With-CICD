@@ -74,8 +74,8 @@ jobs:
         env:
           REACT_APP_API_URL: http://localhost:8070
 
-      - name: Wait for frontend
-        run: npx wait-on http://localhost:3000 --timeout 180000
+      # - name: Wait for frontend
+      #   run: npx wait-on http://localhost:3000 --timeout 180000
 
       # ---------- Cypress ----------
       - name: Run Cypress
@@ -87,3 +87,4 @@ jobs:
           record: false
         env:
           CI: true
+          CYPRESS_baseUrl: http://localhost:3000
