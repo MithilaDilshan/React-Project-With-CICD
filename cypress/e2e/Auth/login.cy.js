@@ -20,7 +20,7 @@ describe("Research Management System", () => {
 
     it("should login with valid data", function () {
       
-      cy.intercept("POST", "**/login").as("loginRequest");
+      cy.intercept("POST", "http://localhost:8070/api/auth/login").as("loginRequest");
 
       loginPage.loginForm(this.data.loginUser);
       loginPage.Login();
