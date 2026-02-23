@@ -284,3 +284,16 @@ const sendToken = (user, statusCode, res) => {
     dept,
   });
 };
+app.post('/api/auth/login', async (req, res, next) => {
+  try {
+    console.log('Login attempt:', req.body) // see username/email sent
+    const user = await User.findOne({ email: req.body.email })
+    if (!user) throw new Error('User not found')
+    const isValid = await user.comparePassword(req.body.password)
+    if (!isValid) throw new Error('Invalid password')
+    res.json({ token: generateToken(user) })
+  } catch (err) {
+    console.error('Login error:', err)
+    next(err)
+  }
+});
