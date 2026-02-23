@@ -16,8 +16,8 @@
     "rePassword": "Test@9999"
   },
   "loginUser": {
-    "email": "test2.student@sliit.lk",
-    "password": "Test@123"
+    "email": "testuser1@example.com",
+    "password": "Test@1234"
   },
   "logininvalid": {
     "email": "testuser1examplecom",
