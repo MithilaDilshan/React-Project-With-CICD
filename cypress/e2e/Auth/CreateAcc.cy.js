@@ -21,7 +21,7 @@ describe("Research Management System", () => {
       cy.fixture("registrationData").as("data");
     });
 
-    it.skip("should register with valid data", function () {
+    it("should register with valid data", function () {
       registrationPage.fillForm(this.data.validUser);
       registrationPage.submit();
       registrationPage.backToLogin();

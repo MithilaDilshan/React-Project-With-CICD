@@ -1,6 +1,8 @@
 const User = require("../models/auth");
+const router = require("../routes/auth");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
+
 
 //when we use asynchronous function we need try catch block
 exports.register = async (req, res) => {
