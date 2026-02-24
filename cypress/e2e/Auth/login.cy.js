@@ -19,29 +19,29 @@ describe("Research Management System", () => {
     });
 
     it("should login with valid data", function () {
-      cy.intercept("POST", "http://localhost:8070/api/auth/login").as(
-        "loginRequest",
-      );
+      cy.log("Starting login test with valid credentials");
 
+      // Set up intercept
+      cy.intercept("POST", "**/api/auth/login").as("loginRequest");
+
+      // Fill and submit the form
       loginPage.loginForm(this.data.loginUser);
       loginPage.Login();
 
-      cy.wait("@loginRequest", { timeout: 30000 })
-        .then((interception) => {
-          if (interception.response.statusCode !== 200) {
-            cy.log("Login request failed:", interception.response);
-          }
-        })
-        .its("response.statusCode")
-        .should("eq", 200);
+      // Wait for request and validate response
+      cy.wait("@loginRequest", { timeout: 30000 });
+
+      // Separate validations
+      cy.get("@loginRequest").should((interception) => {
+        expect(interception.response).to.exist;
+        expect(interception.response.statusCode).to.eq(200);
+      });
+
+      // Check URL change
       cy.url({ timeout: 30000 }).should(
         "include",
-        "/v3/undefined-dashboard/Test",
+        "/v3/student-dashboard/Test",
       );
-
-      // cy.contains('button', 'Sign Out', { timeout: 30000 }).should(
-      //   "be.visible",
-      // );
     });
 
     it("should show error for invalid email", function () {
@@ -51,6 +51,17 @@ describe("Research Management System", () => {
       cy.contains("User does not exists. Please create an account !").should(
         "be.visible",
       );
+    });
+
+    it("should verify backend is accessible", () => {
+      cy.request({
+        method: "GET",
+        url: "http://localhost:8070/health",
+        failOnStatusCode: false,
+      }).then((response) => {
+        cy.log("Backend health check:", response.status, response.body);
+        expect(response.status).to.eq(200);
+      });
     });
   });
 });
