@@ -1,18 +1,18 @@
 import loginPage from "../../Pages/loginPage";
 
 describe("Research Management System", () => {
-  // describe("Student Login UI Tests", () => {
-  //   beforeEach(() => {
-  //     loginPage.visit();
-  //   });
+  describe("Student Login UI Tests", () => {
+    beforeEach(() => {
+      loginPage.visit();
+    });
 
-  //   it("should display all required fields", () => {
-  //     loginPage.elements.Lemail().should("be.visible");
-  //     loginPage.elements.Lpassword().should("be.visible");
-  //   });
-  // });
+    it("should display all required fields", () => {
+      loginPage.elements.Lemail().should("be.visible");
+      loginPage.elements.Lpassword().should("be.visible");
+    });
+  });
 
-  // describe("Student Login Functional Tests", () => {
+  describe("Student Login Functional Tests", () => {
     beforeEach(() => {
       loginPage.visit();
       cy.fixture("registrationData").as("data");
@@ -69,5 +69,5 @@ describe("Research Management System", () => {
         expect(response.status).to.eq(200);
       });
     });
-  // });
+  });
 });

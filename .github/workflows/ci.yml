@@ -45,6 +45,7 @@ jobs:
       PORT: 8070
       MONGODB_URL: ${{ secrets.MONGODB_URL }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_EXPIRES: ${{ secrets.JWT_EXPIRE}}
       NODE_ENV: test
 
     steps:
@@ -87,6 +88,7 @@ jobs:
         env:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRES: ${{ secrets.JWT_EXPIRE}}
 
       - name: Verify seed (optional sanity check)
         run: |
