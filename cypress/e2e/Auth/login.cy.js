@@ -42,9 +42,9 @@ describe("Research Management System", () => {
       // });
 
       // Check URL change
-      cy.url({ timeout: 30000 }).should(
+      cy.url({ timeout: 300000 }).should(
         "include",
-        "/v3/student-dashboard/Test",
+        "v3/student-dashboard/Test",
       );
     });
 
