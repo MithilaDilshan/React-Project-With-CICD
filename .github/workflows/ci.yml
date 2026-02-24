@@ -101,3 +101,8 @@ jobs:
         env:
           CI: true
           CYPRESS_baseUrl: http://localhost:3000
+
+      - name: Show backend logs (after Cypress)
+        if: always()
+        run: cat backend.log
+

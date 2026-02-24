@@ -11,8 +11,8 @@ async function seedUser() {
   try {
     await mongoose.connect(MONGODB_URL);
 
-    const email = 'test2.student@sliit.lk';
-    const password = 'Test@123';
+    const email = 'testci.student@sliit.lk';
+    const password = 'Test@1234';
 
     const existingUser = await User.findOne({ email });
 
@@ -24,10 +24,9 @@ async function seedUser() {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await User.create({
-      username: 'Test Student',
+      username: 'Test Student3',
       email,
-      password: hashedPassword,
-      role: 'student',
+      password,
     });
 
     console.log('✅ Test user seeded successfully');
