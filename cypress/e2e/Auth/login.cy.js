@@ -21,27 +21,25 @@ describe("Research Management System", () => {
     it("should login with valid data", function () {
       cy.log("Starting login test with valid credentials");
 
-      // // Set up intercept
-      // cy.intercept("POST", "http://localhost:8070/api/auth/login").as(
-      //   "loginRequest",
-      // );
+      // Set up intercept
+      cy.intercept("POST", "http://localhost:8070/api/auth/login").as(
+        "loginRequest",
+      );
 
       // Fill and submit the form
       loginPage.loginForm(this.data.loginUser);
       loginPage.Login();
 
-      // cy.visit("http://localhost:3000/v3/student-dashboard/Test");
+      // Wait for request and validate response
+      cy.wait("@loginRequest", { timeout: 30000 });
 
-      // // Wait for request and validate response
-      // cy.wait("@loginRequest", { timeout: 30000 });
-
-      // // Separate validations
-      // cy.get("@loginRequest").then((interception) => {
-      //   cy.log("Status:", interception.response.statusCode);
-      //   cy.log("Body:", JSON.stringify(interception.response.body));
-      //   cy.log("Request body:", JSON.stringify(interception.request.body));
-      //   expect(interception.response.statusCode).to.eq(200);
-      // });
+      // Separate validations
+      cy.get("@loginRequest").then((interception) => {
+        cy.log("Status:", interception.response.statusCode);
+        cy.log("Body:", JSON.stringify(interception.response.body));
+        cy.log("Request body:", JSON.stringify(interception.request.body));
+        expect(interception.response.statusCode).to.eq(200);
+      });
 
       // Check URL change
       cy.url({ timeout: 30000 }).should(
