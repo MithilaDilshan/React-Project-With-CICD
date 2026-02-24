@@ -11,7 +11,7 @@ async function seedUser() {
   try {
     await mongoose.connect(MONGODB_URL);
 
-    const email = 'testci1.student@sliit.lk';
+    const email = 'testci3.student@sliit.lk';
     const password = 'Test@1234';
 
     const existingUser = await User.findOne({ email });

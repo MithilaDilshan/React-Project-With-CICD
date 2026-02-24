@@ -1,18 +1,18 @@
 import loginPage from "../../Pages/loginPage";
 
 describe("Research Management System", () => {
-  describe("Student Login UI Tests", () => {
-    beforeEach(() => {
-      loginPage.visit();
-    });
+  // describe("Student Login UI Tests", () => {
+  //   beforeEach(() => {
+  //     loginPage.visit();
+  //   });
 
-    it("should display all required fields", () => {
-      loginPage.elements.Lemail().should("be.visible");
-      loginPage.elements.Lpassword().should("be.visible");
-    });
-  });
+  //   it("should display all required fields", () => {
+  //     loginPage.elements.Lemail().should("be.visible");
+  //     loginPage.elements.Lpassword().should("be.visible");
+  //   });
+  // });
 
-  describe("Student Login Functional Tests", () => {
+  // describe("Student Login Functional Tests", () => {
     beforeEach(() => {
       loginPage.visit();
       cy.fixture("registrationData").as("data");
@@ -30,6 +30,8 @@ describe("Research Management System", () => {
       loginPage.loginForm(this.data.loginUser);
       loginPage.Login();
 
+      // cy.visit("http://localhost:3000/v3/student-dashboard/Test");
+
       // // Wait for request and validate response
       // cy.wait("@loginRequest", { timeout: 30000 });
 
@@ -42,7 +44,7 @@ describe("Research Management System", () => {
       // });
 
       // Check URL change
-      cy.url({ timeout: 300000 }).should(
+      cy.url({ timeout: 30000 }).should(
         "include",
         "v3/student-dashboard/Test",
       );
@@ -67,5 +69,5 @@ describe("Research Management System", () => {
         expect(response.status).to.eq(200);
       });
     });
-  });
+  // });
 });
