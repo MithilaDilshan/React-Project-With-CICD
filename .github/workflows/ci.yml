@@ -41,6 +41,11 @@ jobs:
     name: Cypress E2E Tests
     runs-on: ubuntu-latest
     needs: [backend, frontend]
+    env:
+      PORT: 8070
+      MONGODB_URL: ${{ secrets.MONGODB_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      NODE_ENV: test
 
     steps:
       - uses: actions/checkout@v4
@@ -62,11 +67,6 @@ jobs:
           cd BACKEND
           npm start > backend.log 2>&1 &
           echo $! > backend.pid
-        env:
-          PORT: 8070
-          MONGODB_URL: ${{ secrets.MONGODB_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          NODE_ENV: test
 
       - name: Show backend logs
         run: cat backend.log
@@ -83,10 +83,15 @@ jobs:
       - name: Seed test user
         run: |
           cd BACKEND
-          npm run seed:test
+          npm run seed:test || (echo "SEED FAILED" && exit 1)
         env:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+      - name: Verify seed (optional sanity check)
+        run: |
+          curl -s http://localhost:8070/health
+          sleep 2
 
       # ---------- Start frontend ----------
       - name: Start frontend
