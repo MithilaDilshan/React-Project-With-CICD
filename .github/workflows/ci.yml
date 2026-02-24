@@ -60,7 +60,8 @@ jobs:
       - name: Start backend & log
         run: |
           cd BACKEND
-          npm start & backend.log 2>&1 &
+          npm start > backend.log 2>&1 &
+          echo $! > backend.pid
         env:
           PORT: 8070
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
@@ -70,9 +71,14 @@ jobs:
       - name: Show backend logs
         run: cat backend.log
 
-      - name: Wait for backend
-        run: npx wait-on http://localhost:8070/health --timeout 180000
-
+      - name: Wait for backend  
+        run: |    
+          echo "Waiting for backend to be ready..."    
+          npx wait-on http://localhost:8070/health --timeout 180000 || (      
+            echo "Backend failed to start. Showing logs:"      
+            cat backend.log      
+            exit 1    
+          )
 
       - name: Seed test user
         run: |
@@ -80,6 +86,7 @@ jobs:
           npm run seed:test
         env:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       # ---------- Start frontend ----------
       - name: Start frontend
@@ -98,11 +105,22 @@ jobs:
         with:
           browser: chrome
           record: false
+          install: false
         env:
           CI: true
           CYPRESS_baseUrl: http://localhost:3000
 
       - name: Show backend logs (after Cypress)
         if: always()
-        run: cat backend.log
+        run: |
+          echo "=== BACKEND LOGS ==="          
+          cat backend.log || echo "No backend logs found"          
+          echo "=== FRONTEND LOGS ==="          
+          cat frontend.log || echo "No frontend logs found"
+      
+      - name: Cleanup processes        
+        if: always()        
+        run: |          
+          if [ -f backend.pid ]; then kill $(cat backend.pid) 2>/dev/null || true; fi          
+          if [ -f frontend.pid ]; then kill $(cat frontend.pid) 2>/dev/null || true; fi
 

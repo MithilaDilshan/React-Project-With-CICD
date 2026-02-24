@@ -36,7 +36,11 @@ app.listen(PORT, () => {
 
 // health route
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
+  res.status(200).json({ 
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    database: connection.readyState === 1 ? "connected" : "disconnected"
+  });
 });
 
 app.use((err, req, res, next) => {

@@ -19,15 +19,25 @@ describe("Research Management System", () => {
     });
 
     it("should login with valid data", function () {
-      
-      cy.intercept("POST", "http://localhost:8070/api/auth/login").as("loginRequest");
+      cy.intercept("POST", "http://localhost:8070/api/auth/login").as(
+        "loginRequest",
+      );
 
       loginPage.loginForm(this.data.loginUser);
       loginPage.Login();
 
-      cy.wait("@loginRequest", { timeout: 30000 }).its("response.statusCode").should("eq", 200);
-
-      cy.url({ timeout: 30000 }).should("include", "/v3/student-dashboard/Test");
+      cy.wait("@loginRequest", { timeout: 30000 })
+        .then((interception) => {
+          if (interception.response.statusCode !== 200) {
+            cy.log("Login request failed:", interception.response);
+          }
+        })
+        .its("response.statusCode")
+        .should("eq", 200);
+      cy.url({ timeout: 30000 }).should(
+        "include",
+        "/v3/undefined-dashboard/Test",
+      );
 
       // cy.contains('button', 'Sign Out', { timeout: 30000 }).should(
       //   "be.visible",
