@@ -22,7 +22,9 @@ describe("Research Management System", () => {
       cy.log("Starting login test with valid credentials");
 
       // Set up intercept
-      cy.intercept("POST", "http://localhost:8070/api/auth/login").as("loginRequest");
+      cy.intercept("POST", "http://localhost:8070/api/auth/login").as(
+        "loginRequest",
+      );
 
       // Fill and submit the form
       loginPage.loginForm(this.data.loginUser);
@@ -33,8 +35,9 @@ describe("Research Management System", () => {
 
       // Separate validations
       cy.get("@loginRequest").then((interception) => {
-        cy.log("Response status:", interception.response.statusCode);
-        cy.log("Response body:", JSON.stringify(interception.response.body));
+        cy.log("Status:", interception.response.statusCode);
+        cy.log("Body:", JSON.stringify(interception.response.body));
+        cy.log("Request body:", JSON.stringify(interception.request.body));
         expect(interception.response.statusCode).to.eq(200);
       });
 
