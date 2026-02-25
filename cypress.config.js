@@ -8,7 +8,9 @@ module.exports = defineConfig({
     pageLoadTimeout: 60000,       // 60 seconds for cy.visit()
     env: {
       registrationPath: '/register',
-      loginPath: '/'
+      loginPath: '/',
+      groupPath: '/v3/student-dashboard/Test/student-group',
+      dashboardPath: '/v3/student-dashboard/Test',
     },
     setupNodeEvents(on, config) {
       return config

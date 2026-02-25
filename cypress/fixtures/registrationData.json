@@ -22,5 +22,16 @@
   "logininvalid": {
     "email": "testuser1examplecom",
     "password": "Test@1234"
+  },
+  "groupData": {
+    "groupName": "Test Group2",
+    "emailS1": "teststudent1@example.com",
+    "nameS1": "Test Student 1",
+    "emailS2": "teststudent2@example.com",
+    "nameS2": "Test Student 2",
+    "emailS3": "teststudent3@example.com",
+    "nameS3": "Test Student 3",
+    "emailS4": "teststudent4@example.com",
+    "nameS4": "Test Student 4"
   }
 }
