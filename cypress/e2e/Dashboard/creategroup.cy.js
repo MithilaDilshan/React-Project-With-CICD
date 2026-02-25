@@ -16,15 +16,20 @@ describe("Research Management System", () => {
 
     it("Create a group successfully", function () {
       cy.fixture("registrationData").then((Data) => {
+        const uniqueGroupName = `${Data.groupData.groupName}_${Date.now()}`;
 
-      // Fill and submit the form
-      CreateGroup.NavigateToGroup();
-      CreateGroup.fillFormGroup(Data.groupData);
-      CreateGroup.submitGroup();
+        const updatedGroupData = {
+          ...Data.groupData,
+          groupName: uniqueGroupName,
+        };
+
+        // Fill and submit the form
+        CreateGroup.NavigateToGroup();
+        CreateGroup.fillFormGroup(updatedGroupData);
+        CreateGroup.submitGroup();
 
         // Validate success message
         cy.contains("New Student Group Added").should("be.visible");
-
       });
     });
   });
