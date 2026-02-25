@@ -95,6 +95,9 @@ jobs:
           browser: chrome
           install: false
           spec: cypress/e2e/${{ matrix.group }}/*.cy.js
+        env:
+          CYPRESS_BASE_URL: http://localhost:3000
+          CYPRESS_API_URL: http://localhost:8070
 
 
       - name: Upload Cypress videos
