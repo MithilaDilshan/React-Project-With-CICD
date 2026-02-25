@@ -81,7 +81,7 @@ jobs:
         run: cd frontend && REACT_APP_API_URL=http://localhost:8070 npm run build
 
       - name: Start frontend
-        run: cd frontend && npx serve -s build -l 3000 &
+        run: cd frontend && npx serve -s build -l 3000 --single &
 
       - name: Wait for frontend
         run: npx wait-on http://localhost:3000 --timeout 180000
@@ -91,7 +91,7 @@ jobs:
         with:
           browser: chrome
           install: false
-          spec: cypress/e2e/${{ matrix.group }}/cy.js
+          spec: cypress/e2e/${{ matrix.group }}/*.cy.js
 
 
       - name: Upload Cypress videos
