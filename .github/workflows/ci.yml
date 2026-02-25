@@ -52,7 +52,7 @@ jobs:
 
     env:
       PORT: 8070
-      MONGODB_URL: ${{ secrets.MONGODB_URL }}
+      MONGODB_URL: ${{ secrets.MONGODB_URL }}_${{ matrix.group }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       JWT_EXPIRE: ${{ secrets.JWT_EXPIRE }}
       NODE_ENV: test
@@ -81,7 +81,10 @@ jobs:
         run: cd frontend && REACT_APP_API_URL=http://localhost:8070 npm run build
 
       - name: Start frontend
-        run: cd frontend && npx serve -s build -l 3000 --single &
+        run: | 
+          cd frontend
+          npx serve -s build -l 3000 --single > frontend.log 2>&1 &
+          echo $! > frontend.pid
 
       - name: Wait for frontend
         run: npx wait-on http://localhost:3000 --timeout 180000
