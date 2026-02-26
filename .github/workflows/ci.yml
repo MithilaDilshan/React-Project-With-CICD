@@ -35,25 +35,7 @@ jobs:
       - name: Frontend build
         run: |
           cd frontend
-          npm run build
-
-  frontend-coverage:
-    name: Frontend Coverage
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install deps
-        run: cd frontend && npm install
-
-      - name: Run coverage
-        run: cd frontend && npm run test:coverage
-
-      - name: Upload coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-coverage
-          path: frontend/coverage
+          npm run builds
   
 
   cypress:
@@ -108,6 +90,10 @@ jobs:
       - name: Wait for frontend
         run: npx wait-on http://localhost:3000 --timeout 180000
 
+      - name: Clean Cypress coverage
+        run: |
+          rm -rf coverage lcov-report .nyc_output
+
       - name: Run Cypress (${{ matrix.group }})
         uses: cypress-io/github-action@v6
         with:
@@ -118,12 +104,20 @@ jobs:
           CYPRESS_BASE_URL: http://localhost:3000
           CYPRESS_API_URL: http://localhost:8070
 
+      - name: Run frontend tests with coverage
+        run: |
+          cd frontend
+          rm -rf coverage
+          npm run test:coverage
+
       - name: Upload Cypress coverage
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cypress-coverage
-          path: coverage
+          path: |
+            coverage
+            coverage/lcov-report
 
 
       - name: Upload Cypress videos

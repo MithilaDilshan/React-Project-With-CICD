@@ -1,3 +1,7 @@
 # dependencies
 /node_modules
 .env
+frontend/coverage
+coverage
+lcov-report
+.nyc_output
