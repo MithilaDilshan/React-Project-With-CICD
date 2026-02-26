@@ -35,7 +35,7 @@ jobs:
       - name: Frontend build
         run: |
           cd frontend
-          npm run builds
+          npm run build
   
 
   cypress:
